@@ -140,6 +140,26 @@
   background-color: #d32f2f;
 }
 
+.error-message {
+  background-color: #ffebee;
+  color: #d32f2f;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  text-align: center;
+  border: 1px solid #ffcdd2;
+}
+
+select.clip-input {
+  appearance: auto;
+  background-color: white;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 @media (max-width: 768px) {
   .controls-container {
     flex-direction: column;

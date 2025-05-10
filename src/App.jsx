@@ -1,38 +1,84 @@
 import { useState, useEffect, useRef } from 'react'
 import './App.css'
+import { saveClip, fetchClipByName, fetchAllClips } from './services/clipboardService'
 
 const App = () => {
   const [clipName, setClipName] = useState('')
   const [loadClipName, setLoadClipName] = useState('')
   const [clipData, setClipData] = useState(Array(20).fill(''))
   const [currentClip, setCurrentClip] = useState('Untitled')
+  const [availableClips, setAvailableClips] = useState([])
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState(null)
 
-  const handleSaveClip = () => {
+  // Fetch available clips on component mount
+  useEffect(() => {
+    const loadAvailableClips = async () => {
+      try {
+        const clips = await fetchAllClips()
+        setAvailableClips(clips)
+      } catch (err) {
+        console.error('Error loading clips:', err)
+        setError('Failed to load available clips')
+      }
+    }
+    
+    loadAvailableClips()
+  }, [])
+
+  const handleSaveClip = async () => {
     if (!clipName.trim()) {
       alert('Please enter a clip name')
       return
     }
     
-    // Save to localStorage
-    localStorage.setItem(clipName, JSON.stringify(clipData))
-    setCurrentClip(clipName)
-    setClipName('')
-    alert(`Clip "${clipName}" saved successfully!`)
+    setIsLoading(true)
+    setError(null)
+    
+    try {
+      // Save to Supabase
+      await saveClip(clipName, clipData)
+      setCurrentClip(clipName)
+      setClipName('')
+      
+      // Refresh the list of available clips
+      const clips = await fetchAllClips()
+      setAvailableClips(clips)
+      
+      alert(`Clip "${clipName}" saved successfully!`)
+    } catch (err) {
+      console.error('Error saving clip:', err)
+      setError('Failed to save clip')
+      alert('Failed to save clip. Please try again.')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
-  const handleLoadClip = () => {
+  const handleLoadClip = async () => {
     if (!loadClipName.trim()) {
       alert('Please enter a clip name to load')
       return
     }
     
-    const savedClip = localStorage.getItem(loadClipName)
-    if (savedClip) {
-      setClipData(JSON.parse(savedClip))
-      setCurrentClip(loadClipName)
-      setLoadClipName('')
-    } else {
-      alert(`Clip "${loadClipName}" not found!`)
+    setIsLoading(true)
+    setError(null)
+    
+    try {
+      const clip = await fetchClipByName(loadClipName)
+      if (clip) {
+        setClipData(clip.data)
+        setCurrentClip(clip.name)
+        setLoadClipName('')
+      } else {
+        alert(`Clip "${loadClipName}" not found!`)
+      }
+    } catch (err) {
+      console.error('Error loading clip:', err)
+      setError('Failed to load clip')
+      alert('Failed to load clip. Please try again.')
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -94,21 +140,42 @@ const App = () => {
             onChange={(e) => setClipName(e.target.value)}
             placeholder="Enter clip name"
             className="clip-input"
+            disabled={isLoading}
           />
-          <button onClick={handleSaveClip} className="action-button">Save</button>
+          <button 
+            onClick={handleSaveClip} 
+            className="action-button"
+            disabled={isLoading}
+          >
+            {isLoading ? 'Saving...' : 'Save'}
+          </button>
         </div>
         
         <div className="control-group">
-          <input
-            type="text"
+          <select
             value={loadClipName}
             onChange={(e) => setLoadClipName(e.target.value)}
-            placeholder="Enter clip name to load"
             className="clip-input"
-          />
-          <button onClick={handleLoadClip} className="action-button">Load</button>
+            disabled={isLoading}
+          >
+            <option value="">Select a clip to load</option>
+            {availableClips.map(clip => (
+              <option key={clip.id} value={clip.name}>
+                {clip.name}
+              </option>
+            ))}
+          </select>
+          <button 
+            onClick={handleLoadClip} 
+            className="action-button"
+            disabled={isLoading || !loadClipName}
+          >
+            {isLoading ? 'Loading...' : 'Load'}
+          </button>
         </div>
       </div>
+      
+      {error && <div className="error-message">{error}</div>}
       
       <h2 className="current-clip">Current Clip: {currentClip}</h2>
       
