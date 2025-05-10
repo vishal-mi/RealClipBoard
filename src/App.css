@@ -1,0 +1,165 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  width: 100%;
+}
+
+.clipboard-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  background-color: #f5f5f5;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.app-title {
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+  font-size: 2.5rem;
+  border-bottom: 2px solid #444554;
+  padding-bottom: 10px;
+}
+
+.controls-container {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.control-group {
+  display: flex;
+  flex: 1;
+  min-width: 250px;
+}
+
+.clip-input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px 0 0 4px;
+  font-size: 1rem;
+}
+
+.action-button {
+  padding: 10px 15px;
+  background-color: #535687;
+  color: white;
+  border: none;
+  border-radius: 0 4px 4px 0;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s;
+}
+
+.action-button:hover {
+  background-color: #535bf2;
+}
+
+.current-clip {
+  margin: 10px 0;
+  font-size: 1.2rem;
+  color: #444;
+  text-align: center;
+}
+
+.clip-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.clip-row {
+  display: flex;
+  align-items: flex-start;
+  background-color: white;
+  border-radius: 4px;
+  padding: 5px 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.row-number {
+  min-width: 30px;
+  font-weight: bold;
+  color: #646cff;
+  padding-top: 8px;
+}
+
+.row-input {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-right: 10px;
+  font-size: 0.9rem;
+  resize: none;
+  overflow: hidden;
+  min-height: 38px;
+  font-family: inherit;
+  line-height: 1.5;
+}
+
+.row-actions {
+  display: flex;
+  gap: 5px;
+  padding-top: 4px;
+}
+
+.row-button {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: background-color 0.3s;
+}
+
+.copy-button {
+  background-color: #4caf50;
+  color: white;
+}
+
+.copy-button:hover {
+  background-color: #3e8e41;
+}
+
+.clear-button {
+  background-color: #f44336;
+  color: white;
+}
+
+.clear-button:hover {
+  background-color: #d32f2f;
+}
+
+@media (max-width: 768px) {
+  .controls-container {
+    flex-direction: column;
+  }
+  
+  .control-group {
+    width: 100%;
+  }
+  
+  .clip-row {
+    flex-wrap: wrap;
+  }
+  
+  .row-input {
+    width: 100%;
+    margin-bottom: 5px;
+  }
+  
+  .row-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
